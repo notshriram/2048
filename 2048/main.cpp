@@ -6,10 +6,10 @@
 #include<iostream>
 #include<numeric>
 #include <sstream>
-
+static bool over = false;
 namespace patch
 {
-	template < typename T > std::string to_string(const T& n)
+	template <typename T> std::string to_string(const T& n)
 	{
 		std::ostringstream stm;
 		stm << n;
@@ -33,9 +33,8 @@ public:
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
 				BoardMat[i][j] = NULL;
-		int row = rand() % 4;
-		int col = rand() % 4;
-		BoardMat[row][col] = new Tile();
+		spawn();
+		spawn();
 	}
 	void draw(SDL_Renderer * renderer) {
 
@@ -49,7 +48,7 @@ public:
 					SDL_SetRenderDrawColor(renderer, (10 * value) % 256, (20 * value) % 256, (30 * value) % 256, 255);
 					SDL_Surface* surface = NULL;
 					SDL_Texture* texture = NULL;
-					surface = TTF_RenderText_Solid(font, patch::to_string(value).c_str(), white);
+					surface = TTF_RenderText_Blended(font, patch::to_string(value).c_str(), white);
 					texture = SDL_CreateTextureFromSurface(renderer, surface);
 					int recw, rech;
 					SDL_QueryTexture(texture, NULL, NULL, &recw, &rech);
@@ -65,20 +64,22 @@ public:
 	}
 	void moveright()
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i <4 ; i++)
 			for (int j = 0; j < 4; j++)
 			{
 				if (BoardMat[i][j] != NULL)
 				{
-					if (i < 3) {
-						if (BoardMat[i + 1][j] == NULL) {
-							BoardMat[i + 1][j] = BoardMat[i][j];
-							BoardMat[i][j] = NULL;
+					if (i != 3) {
+						if (BoardMat[i + 1][j] != NULL) {
+							if (BoardMat[i + 1][j]->val == BoardMat[i][j]->val) {
+								BoardMat[i + 1][j]->val = 2 * (BoardMat[i + 1][j]->val);
+								BoardMat[i][j] = NULL;
+							}
+
 						}
-						else if (BoardMat[i + 1][j]->val == BoardMat[i][j]->val) {
-							BoardMat[i + 1][j]->val = 2 * (BoardMat[i + 1][j]->val);
-							BoardMat[i][j] = NULL;
-						}
+						else{ BoardMat[i + 1][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
 
 					}
 
@@ -86,57 +87,64 @@ public:
 				}
 
 			}
-		spawn();
+		
 	}
 	void moveleft()
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 3; i >=0; i--)
 			for (int j = 0; j < 4; j++)
 			{
 				if (BoardMat[i][j] != NULL)
 				{
 					if (i > 0) {
-						if (BoardMat[i - 1][j] == NULL) {
+						if (BoardMat[i - 1][j] != NULL) {
+							if (BoardMat[i - 1][j]->val == BoardMat[i][j]->val) {
+								BoardMat[i - 1][j]->val = 2 * (BoardMat[i - 1][j]->val);
+								BoardMat[i][j] = NULL;
+							}
+							
+						}
+						
+						else {
 							BoardMat[i - 1][j] = BoardMat[i][j];
 							BoardMat[i][j] = NULL;
 						}
-						else if (BoardMat[i - 1][j]->val == BoardMat[i][j]->val) {
-							BoardMat[i - 1][j]->val = 2 * (BoardMat[i - 1][j]->val);
-							BoardMat[i][j] = NULL;
-						}
-
 					}
 
 					else continue;
 				}
 
 			}
-		spawn();
+		
 	}
 	void moveup()
 	{
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
+		
+		for (int j = 3; j >= 0; j--)
+			for (int i = 0; i < 4; i++)
 			{
 				if (BoardMat[i][j] != NULL)
 				{
 					if (j > 0) {
-						if (BoardMat[i][j - 1] == NULL) {
+						if (BoardMat[i][j - 1] != NULL) {
+							if (BoardMat[i][j - 1]->val == BoardMat[i][j]->val) {
+								BoardMat[i][j - 1]->val = 2 * (BoardMat[i][j - 1]->val);
+								BoardMat[i][j] = NULL;
+							}
+						}
+						
+						else {
 							BoardMat[i][j - 1] = BoardMat[i][j];
 							BoardMat[i][j] = NULL;
 						}
-						else if (BoardMat[i][j - 1]->val == BoardMat[i][j]->val) {
-							BoardMat[i][j - 1]->val = 2 * (BoardMat[i][j - 1]->val);
-							BoardMat[i][j] = NULL;
-						}
-
 					}
+
 
 					else continue;
 				}
 
 			}
-		spawn();
+		
 	}
 	void movedown()
 	{
@@ -146,12 +154,15 @@ public:
 				if (BoardMat[i][j] != NULL)
 				{
 					if (j < 3) {
-						if (BoardMat[i][j + 1] == NULL) {
-							BoardMat[i][j + 1] = BoardMat[i][j];
-							BoardMat[i][j] = NULL;
+						if (BoardMat[i][j + 1] != NULL) {
+							if (BoardMat[i][j + 1]->val == BoardMat[i][j]->val) {
+								BoardMat[i][j + 1]->val = 2 * (BoardMat[i][j + 1]->val);
+								BoardMat[i][j] = NULL;
+							}
 						}
-						else if (BoardMat[i][j + 1]->val == BoardMat[i][j]->val) {
-							BoardMat[i][j + 1]->val = 2 * (BoardMat[i][j + 1]->val);
+						
+						else {
+							BoardMat[i][j + 1] = BoardMat[i][j];
 							BoardMat[i][j] = NULL;
 						}
 
@@ -161,14 +172,46 @@ public:
 				}
 
 			}
-		spawn();
+		
 	}
 	void spawn() {
-		while (1) {
+		int freesq = 0;
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++) {
+				if ((BoardMat[i][j] == NULL))freesq++;
+			}
+		if (!freesq) { over = gameover(); }
+		while (freesq) {
 			int row = rand() % 4;
 			int col = rand() % 4;
 			if (BoardMat[row][col] == NULL) { BoardMat[row][col] = new Tile(); break; }
 		}
+	}
+	bool gameover() {
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (BoardMat[i][j] != NULL) {
+					if (j < 3 && BoardMat[i][j + 1]!=NULL)if (BoardMat[i][j]->val == BoardMat[i][j + 1]->val)return false;
+					if (j > 0 && BoardMat[i][j - 1] != NULL)if (BoardMat[i][j]->val == BoardMat[i][j - 1]->val)return false;
+					if (i < 3 && BoardMat[i+1][j] != NULL)if (BoardMat[i][j]->val == BoardMat[i + 1][j]->val)return false;
+					if (i > 0 && BoardMat[i-1][j] != NULL)if (BoardMat[i][j]->val == BoardMat[i - 1][j]->val)return false;
+				}
+			}
+		}
+		return true;
+	}
+	void printend(SDL_Renderer*renderer) {
+		SDL_Surface* surface = NULL;
+		SDL_Texture* texture = NULL;
+		surface = TTF_RenderText_Blended(font,"Game Over. Press Esc to quit.", white);
+		texture = SDL_CreateTextureFromSurface(renderer, surface);
+		int recw, rech;
+		SDL_QueryTexture(texture, NULL, NULL, &recw, &rech);
+		SDL_Rect dstrect = { 80,180,recw/2,rech/2 };
+		SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
+		SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+		SDL_FreeSurface(surface);
+		SDL_DestroyTexture(texture);
 	}
 	~Board() {
 		for (int i = 0; i < 4; ++i) {
@@ -181,7 +224,7 @@ public:
 };
 int main(int* argc, char** argv)
 {
-	//srand(unsigned int(time(NULL)));
+	srand(unsigned int(time(NULL)));
 	SDL_Init(SDL_INIT_EVERYTHING);
 	TTF_Init();
 	SDL_Window* window = SDL_CreateWindow("2048", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 400, SDL_WINDOW_SHOWN);
@@ -194,27 +237,36 @@ int main(int* argc, char** argv)
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)isRunning = false;
-			if (event.type = SDL_KEYDOWN)
+			if (event.type == SDL_KEYDOWN)
 			{
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:isRunning = false; break;
-				case SDLK_RIGHT:board.moveright(); std::cout << "press"; break;
-				case SDLK_LEFT:board.moveleft(); break;
-				case SDLK_UP:board.moveup(); break;
-				case SDLK_DOWN:board.movedown(); break;
+				case SDLK_RIGHT:board.moveright(); board.spawn();; break;
+				case SDLK_LEFT:board.moveleft(); board.spawn(); break;
+				case SDLK_UP:board.moveup(); board.spawn(); break;
+				case SDLK_DOWN:board.movedown(); board.spawn(); break;
 				}
 			}
-			if (event.type = SDL_KEYUP)
+			if (event.type == SDL_KEYUP)
 			{
 				switch (event.key.keysym.sym) {
 				case SDLK_RIGHT:break;
 				}
 			}
 		}
+		
 		SDL_RenderClear(renderer);
-		board.draw(renderer);
+		if (!over)board.draw(renderer);
+		else board.printend(renderer);
 		SDL_RenderPresent(renderer);
-
+		/*char input = 'x';
+		std::cin >> input;
+		switch (input) {
+		case 'd':board.moveright(); board.spawn(); break;
+		case 'a':board.moveleft(); board.spawn(); break;
+		case 'w':board.moveup(); board.spawn(); break;
+		case 's':board.movedown(); board.spawn(); break;
+		}*/
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
