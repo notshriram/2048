@@ -1,7 +1,9 @@
 # 2048
 An implementation of the game 2048 in C++ and SDL.
 If you want to see it in action, Download the ```/Release``` folder with all the dll files in it and run 2048.exe
-<img src="Capture.PNG" alt="Capture" width="300"/></img>
+
+
+<img src="Capture.png" alt="Capture" width="300"/></img>
 ## Requirements
 Requires linking SDL2 and SDL2_ttf libraries. If you want to modify this code,make sure to link those libraries to your Visual Studio solution.
 ## Built With
