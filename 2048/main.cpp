@@ -45,7 +45,7 @@ public:
 				if (BoardMat[i][j] != NULL)
 				{
 					int value = BoardMat[i][j]->GetVal();
-					SDL_SetRenderDrawColor(renderer, (10 * value) % 256, (20 * value) % 256, (30 * value) % 256, 255);
+					SDL_SetRenderDrawColor(renderer, (5 * value) % 256, (2 * value) % 256, (3 * value) % 256, 255);
 					SDL_Surface* surface = NULL;
 					SDL_Texture* texture = NULL;
 					surface = TTF_RenderText_Blended(font, patch::to_string(value).c_str(), white);
@@ -64,7 +64,7 @@ public:
 	}
 	void moveright()
 	{
-		for (int i = 0; i <4 ; i++)
+		for (int i = 3; i >= 0; i--)
 			for (int j = 0; j < 4; j++)
 			{
 				if (BoardMat[i][j] != NULL)
@@ -75,23 +75,33 @@ public:
 								BoardMat[i + 1][j]->val = 2 * (BoardMat[i + 1][j]->val);
 								BoardMat[i][j] = NULL;
 							}
-
 						}
-						else{ BoardMat[i + 1][j] = BoardMat[i][j];
-						BoardMat[i][j] = NULL;
+						
 					}
-
-					}
-
 					else continue;
 				}
-
 			}
-		
+		for (int i = 3; i >= 0; i--)
+			for (int j = 0; j < 4; j++)
+				if (BoardMat[i][j] != NULL) {
+					if (i<4&&BoardMat[3][j] == NULL)
+					{
+						BoardMat[3][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (i<3 && BoardMat[2][j] == NULL) {
+						BoardMat[2][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (i < 2 && BoardMat[1][j] == NULL) {
+						BoardMat[1][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+				}
 	}
 	void moveleft()
 	{
-		for (int i = 3; i >=0; i--)
+		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
 			{
 				if (BoardMat[i][j] != NULL)
@@ -104,23 +114,37 @@ public:
 							}
 							
 						}
-						
-						else {
-							BoardMat[i - 1][j] = BoardMat[i][j];
-							BoardMat[i][j] = NULL;
-						}
+
 					}
 
 					else continue;
 				}
 
 			}
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				if (BoardMat[i][j] != NULL) {
+					if (i > 0 && BoardMat[0][j] == NULL) {
+						BoardMat[0][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (i > 1 && BoardMat[1][j] == NULL) {
+						BoardMat[1][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (i > 2 && BoardMat[2][j] == NULL)
+					{
+						BoardMat[2][j] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+
+				}
 		
 	}
 	void moveup()
 	{
 		
-		for (int j = 3; j >= 0; j--)
+		for (int j = 0; j < 4; j++)
 			for (int i = 0; i < 4; i++)
 			{
 				if (BoardMat[i][j] != NULL)
@@ -132,11 +156,6 @@ public:
 								BoardMat[i][j] = NULL;
 							}
 						}
-						
-						else {
-							BoardMat[i][j - 1] = BoardMat[i][j];
-							BoardMat[i][j] = NULL;
-						}
 					}
 
 
@@ -144,12 +163,29 @@ public:
 				}
 
 			}
+		for (int j = 0; j < 4; j++)
+		for (int i = 0; i < 4; i++)
+				if (BoardMat[i][j] != NULL) {
+					if (j > 0 && BoardMat[i][0] == NULL) {
+						BoardMat[i][0] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (j > 1 && BoardMat[i][1] == NULL) {
+						BoardMat[i][1] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (j > 2 && BoardMat[i][2] == NULL)
+					{
+						BoardMat[i][2] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+				}
 		
 	}
 	void movedown()
 	{
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
+		for (int j = 3; j >= 0; j--)
+			for (int i = 0; i < 4; i++)
 			{
 				if (BoardMat[i][j] != NULL)
 				{
@@ -160,19 +196,30 @@ public:
 								BoardMat[i][j] = NULL;
 							}
 						}
-						
-						else {
-							BoardMat[i][j + 1] = BoardMat[i][j];
-							BoardMat[i][j] = NULL;
-						}
-
 					}
-
 					else continue;
 				}
-
 			}
-		
+		for (int j = 3; j >= 0; j--)
+			for (int i = 0; i < 4; i++)
+				if (BoardMat[i][j] != NULL) {
+					if (j < 4 && BoardMat[i][3] == NULL)
+					{
+						BoardMat[i][3] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (j < 3 && BoardMat[i][2] == NULL)
+					{
+						BoardMat[i][2] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+					else if (j < 2 && BoardMat[i][1] == NULL)
+					{
+						BoardMat[i][1] = BoardMat[i][j];
+						BoardMat[i][j] = NULL;
+					}
+				}
+
 	}
 	void spawn() {
 		int freesq = 0;
